@@ -45,6 +45,7 @@ fn test_gaggle() {
     worker_configuration.worker = true;
     worker_configuration.host = "".to_string();
     worker_configuration.users = None;
+    worker_configuration.hatch_rate = 0;
     worker_configuration.no_metrics = false;
     worker_configuration.run_time = "".to_string();
     // Can't change this on the worker.
