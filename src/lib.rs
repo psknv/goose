@@ -1447,7 +1447,7 @@ impl GooseAttack {
     }
 
     // Determine if the status_codes flag is enabled.
-    fn set_status_codes(&mut self) -> bool {
+    fn set_status_codes(&mut self) {
         // Overload self.configuration.status_codes so it's available on Worker.
         if !self.configuration.status_codes {
             self.configuration.status_codes = if let Some(default) = self.defaults.status_codes {
@@ -1461,12 +1461,10 @@ impl GooseAttack {
                 false
             };
         }
-
-        self.configuration.status_codes
     }
 
     // Determine if the only_summary flag is enabled.
-    fn set_only_summary(&mut self) -> bool {
+    fn set_only_summary(&mut self) {
         // Overload self.configuration.only_summary so it's available on Worker.
         if !self.configuration.only_summary {
             self.configuration.only_summary = if let Some(default) = self.defaults.only_summary {
@@ -1480,12 +1478,10 @@ impl GooseAttack {
                 false
             };
         }
-
-        self.configuration.only_summary
     }
 
     // Determine if the no_task_metrics flag is enabled.
-    fn set_no_task_metrics(&mut self) -> bool {
+    fn set_no_task_metrics(&mut self) {
         // Overload self.configuration.no_task_metrics so it's available to Users.
         if !self.configuration.no_task_metrics {
             self.configuration.no_task_metrics =
@@ -1500,8 +1496,40 @@ impl GooseAttack {
                     false
                 };
         }
+    }
 
-        self.configuration.no_task_metrics
+    // Determine if the no_metrics flag is enabled.
+    fn set_no_metrics(&mut self) {
+        // Overload self.configuration.no_metrics so it's available to Users.
+        if !self.configuration.no_metrics {
+            self.configuration.no_metrics = if let Some(default) = self.defaults.no_metrics {
+                // Do not default to no_metrics on Worker.
+                if self.attack_mode == GooseMode::Worker {
+                    false
+                } else {
+                    default
+                }
+            } else {
+                false
+            };
+        }
+    }
+
+    // Determine if the sticky_follow flag is enabled.
+    fn set_sticky_follow(&mut self) {
+        // Overload self.configuration.sticky_follow so it's available to Users.
+        if !self.configuration.sticky_follow {
+            self.configuration.sticky_follow = if let Some(default) = self.defaults.sticky_follow {
+                // Do not default to sticky_follow on Worker.
+                if self.attack_mode == GooseMode::Worker {
+                    false
+                } else {
+                    default
+                }
+            } else {
+                false
+            };
+        }
     }
 
     #[cfg(feature = "gaggle")]
@@ -1727,6 +1755,12 @@ impl GooseAttack {
 
         // Set up no_task_metrics flag.
         self.set_no_task_metrics();
+
+        // Set up no_metrics flag.
+        self.set_no_metrics();
+
+        // Set up sticky_follow flag.
+        self.set_sticky_follow();
 
         // Confirm there's either a global host, or each task set has a host defined.
         if self.configuration.host.is_empty() {
